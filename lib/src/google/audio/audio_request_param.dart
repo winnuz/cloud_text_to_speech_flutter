@@ -6,6 +6,7 @@ class AudioRequestParamsGoogle {
   final String audioFormat;
   final String rate;
   final String pitch;
+  final bool isSSMLFormat;
 
   AudioRequestParamsGoogle({
     required this.voice,
@@ -13,5 +14,6 @@ class AudioRequestParamsGoogle {
     required this.audioFormat,
     required this.rate,
     required this.pitch,
+    required this.isSSMLFormat,
   });
 }

@@ -24,7 +24,7 @@ class AudioHandlerGoogle {
           SsmlGoogle(text: params.text, rate: params.rate, pitch: params.pitch);
 
       final Map<String, dynamic> body = {
-        'input': {'ssml': ssml.sanitizedSsml},
+        'input': params.isSSMLFormat ? {'ssml': ssml.sanitizedSsml} :  {'text': params.text},
         'voice': {
           'name': params.voice.code,
           'languageCode': params.voice.locale.code

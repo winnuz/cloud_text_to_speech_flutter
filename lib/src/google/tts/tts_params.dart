@@ -10,12 +10,14 @@ class TtsParamsGoogle extends AudioRequestParamsGoogle {
     required VoiceGoogle voice,
     required String audioFormat,
     required String text,
+    bool? isSSMLFormat,
     String? rate,
     String? pitch,
   }) : super(
           voice: voice,
           audioFormat: audioFormat,
           text: text,
+          isSSMLFormat: isSSMLFormat ?? true,
           rate: rate ?? 'default',
           pitch: pitch ?? 'default',
         );

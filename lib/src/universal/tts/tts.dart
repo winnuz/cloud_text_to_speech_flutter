@@ -1,7 +1,4 @@
-import 'package:cloud_text_to_speech/src/amazon/audio/audio_responses.dart';
-import 'package:cloud_text_to_speech/src/amazon/common/init.dart';
-import 'package:cloud_text_to_speech/src/amazon/tts/tts.dart';
-import 'package:cloud_text_to_speech/src/amazon/voices/voices.dart';
+
 import 'package:cloud_text_to_speech/src/common/tts/tts_providers.dart';
 import 'package:cloud_text_to_speech/src/common/utils/helpers.dart';
 import 'package:cloud_text_to_speech/src/common/utils/log.dart';
@@ -33,9 +30,8 @@ class TtsUniversal {
           {required String provider,
           InitParamsGoogle? googleParams,
           InitParamsMicrosoft? microsoftParams,
-          InitParamsAmazon? amazonParams,
           bool withLogs = true}) =>
-      _init(provider, googleParams, microsoftParams, amazonParams, withLogs);
+      _init(provider, googleParams, microsoftParams, withLogs);
 
   ///Get voices
   ///
@@ -99,11 +95,6 @@ class TtsUniversal {
           return VoicesSuccessUniversal(
               voices: voices.voices, code: voices.code, reason: voices.reason);
         },
-        amazon: () async {
-          VoicesSuccessAmazon voices = await TtsAmazon.getVoices();
-          return VoicesSuccessUniversal(
-              voices: voices.voices, code: voices.code, reason: voices.reason);
-        },
         provider: provider);
   }
 
@@ -138,19 +129,13 @@ class TtsUniversal {
           return AudioSuccessUniversal(
               audio: audio.audio, code: audio.code, reason: audio.reason);
         },
-        amazon: () async {
-          AudioSuccessAmazon audio =
-              await TtsAmazon.convertTts(TtsParamsMapper.toAmazon(params));
-          return AudioSuccessUniversal(
-              audio: audio.audio, code: audio.code, reason: audio.reason);
-        },
         provider: params.voice.provider);
   }
 
   static void _init(String provider, InitParamsGoogle? google,
-      InitParamsMicrosoft? microsoft, InitParamsAmazon? amazon,
+      InitParamsMicrosoft? microsoft,
       [bool withLogs = true]) {
-    _assertInitParams(provider, google, microsoft, amazon);
+    _assertInitParams(provider, google, microsoft);
     _initLogs(withLogs);
 
     TtsUniversal._provider = provider.toLowerCase();
@@ -169,11 +154,6 @@ class TtsUniversal {
         initialisedProviders.add(TtsProviders.microsoft);
       }
 
-      if (amazon != null) {
-        TtsAmazon.init(params: amazon);
-        initialisedProviders.add(TtsProviders.amazon);
-      }
-
       _initDone = true;
       Log.d("TtsUniversal initialised for: ${initialisedProviders.join(', ')}");
     } else {
@@ -182,8 +162,8 @@ class TtsUniversal {
   }
 
   static void _assertInitParams(String provider, InitParamsGoogle? google,
-      InitParamsMicrosoft? microsoft, InitParamsAmazon? amazon) {
-    if (google == null && microsoft == null && amazon == null) {
+      InitParamsMicrosoft? microsoft) {
+    if (google == null && microsoft == null) {
       throw Exception(
           "Initialization parameters are missing for all providers.");
     }
@@ -195,9 +175,6 @@ class TtsUniversal {
       case TtsProviders.microsoft:
         assert(microsoft != null,
             'Microsoft initialization parameters are missing.');
-        break;
-      case TtsProviders.amazon:
-        assert(amazon != null, 'Amazon initialization parameters are missing.');
         break;
       case TtsProviders.combine:
         break;
@@ -220,9 +197,6 @@ class TtsUniversal {
       case TtsProviders.microsoft:
         assert(microsoft != null, 'Microsoft handle function is missing.');
         return microsoft!();
-      case TtsProviders.amazon:
-        assert(amazon != null, 'Amazon handle function is missing.');
-        return amazon!();
       case TtsProviders.combine:
         assert(combine != null, 'Combine handle function is missing.');
         return combine!();
@@ -240,8 +214,6 @@ class TtsUniversal {
         return TtsGoogle.initDone;
       case TtsProviders.microsoft:
         return TtsMicrosoft.initDone;
-      case TtsProviders.amazon:
-        return TtsAmazon.initDone;
       default:
         throw Exception("Unknown provider: $provider");
     }

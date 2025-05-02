@@ -7,8 +7,6 @@ void main() async {
         googleParams: InitParamsGoogle(apiKey: 'API-KEY'),
         microsoftParams: InitParamsMicrosoft(
             subscriptionKey: 'SUBSCRIPTION-KEY', region: 'eastus'),
-        amazonParams: InitParamsAmazon(
-            keyId: 'KEY-ID', accessKey: 'ACCESS-KEY', region: 'us-east-1'),
         withLogs: true);
 
     //Generate Audio for a text

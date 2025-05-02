@@ -34,10 +34,6 @@ class MyHomePage extends StatefulWidget {
   final InitParamsMicrosoft initParamsMicrosoft = InitParamsMicrosoft(
       subscriptionKey: dotenv.env['MICROSOFT_SUBSCRIPTION_KEY']!,
       region: dotenv.env['MICROSOFT_REGION']!);
-  final InitParamsAmazon initParamsAmazon = InitParamsAmazon(
-      keyId: dotenv.env['AMAZON_KEY_ID']!,
-      accessKey: dotenv.env['AMAZON_ACCESS_KEY']!,
-      region: dotenv.env['AMAZON_REGION']!);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -150,53 +146,6 @@ class _MyHomePageState extends State<MyHomePage> {
           print("Something went wrong: $e");
         }
         break;
-      case 'amazon':
-        setState(() {
-          testTitle = 'Amazon TTS Test';
-        });
-
-        try {
-          TtsAmazon.init(params: widget.initParamsAmazon, withLogs: true);
-
-          // Get voices
-          final voicesResponseAmazon = await TtsAmazon.getVoices();
-          final voicesAmazon = voicesResponseAmazon.voices;
-
-          //Set all voices
-          setState(() {
-            voices = voicesAmazon
-                .map((e) => Text(
-                    '${e.locale.name} - ${e.locale.code}: ${e.name} (${e.gender}) - ${e.engines.join(", ")}'))
-                .toList();
-          });
-
-          //Pick an English Voice
-          final voiceAmazon = voicesResponseAmazon.voices
-              .where((element) => element.locale.code.startsWith("en-"))
-              .toList(growable: false)
-              .first;
-
-          TtsParamsAmazon paramsAmazon = TtsParamsAmazon(
-              voice: voiceAmazon,
-              audioFormat: AudioOutputFormatAmazon.mp3,
-              text: text,
-              rate: 'slow',
-              // optional
-              pitch: 'default');
-
-          final ttsResponseAmazon = await TtsAmazon.convertTts(paramsAmazon);
-
-          //Get the audio bytes.
-          final audioBytesAmazon = ttsResponseAmazon.audio.buffer
-              .asByteData(); // you can save to a file for playback
-          setState(() {
-            audioSize =
-                "${(audioBytesAmazon.lengthInBytes / (1024 * 1024)).toStringAsPrecision(2)} Mb";
-          });
-        } catch (e) {
-          print("Something went wrong: $e");
-        }
-        break;
       case 'universal-single':
         setState(() {
           testTitle = 'Universal(Single) TTS Test';
@@ -207,7 +156,6 @@ class _MyHomePageState extends State<MyHomePage> {
               provider: 'amazon',
               googleParams: widget.initParamsGoogle,
               microsoftParams: widget.initParamsMicrosoft,
-              amazonParams: widget.initParamsAmazon,
               withLogs: true);
 
           for (String provider in ['amazon', 'microsoft', 'google']) {
@@ -264,7 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
               provider: TtsProviders.combine,
               googleParams: widget.initParamsGoogle,
               microsoftParams: widget.initParamsMicrosoft,
-              amazonParams: widget.initParamsAmazon,
               withLogs: true);
 
           final voicesResponse = await TtsUniversal.getVoices();

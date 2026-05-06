@@ -29,6 +29,7 @@ class TtsGoogle {
         withLogs,
         androidPackageName: params.androidPackageName,
         androidCertFingerprint: params.androidCertFingerprint,
+        iosBundleIdentifier: params.iosBundleIdentifier,
       );
 
   ///Get voices
@@ -67,12 +68,14 @@ class TtsGoogle {
     bool withLogs, {
     String? androidPackageName,
     String? androidCertFingerprint,
+    String? iosBundleIdentifier,
   }) {
     if (!_initDone) {
       ConfigGoogle.init(
         apiKey: apiKey,
         androidPackageName: androidPackageName,
         androidCertFingerprint: androidCertFingerprint,
+        iosBundleIdentifier: iosBundleIdentifier,
       );
       _initRepository();
       _initLogs(withLogs);

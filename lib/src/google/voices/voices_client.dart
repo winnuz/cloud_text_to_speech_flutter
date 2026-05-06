@@ -15,11 +15,15 @@ class VoicesClientGoogle extends BaseClient {
 
     final packageName = ConfigGoogle.androidPackageName;
     final certFingerprint = ConfigGoogle.androidCertFingerprint;
+    final iosBundleId = ConfigGoogle.iosBundleIdentifier;
     if (packageName != null && packageName.isNotEmpty) {
       request.headers['X-Android-Package'] = packageName;
     }
     if (certFingerprint != null && certFingerprint.isNotEmpty) {
       request.headers['X-Android-Cert'] = certFingerprint;
+    }
+    if (iosBundleId != null && iosBundleId.isNotEmpty) {
+      request.headers['X-Ios-Bundle-Identifier'] = iosBundleId;
     }
 
     return client.send(request);

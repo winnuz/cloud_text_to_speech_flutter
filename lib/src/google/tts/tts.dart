@@ -21,10 +21,15 @@ class TtsGoogle {
   ///
   /// **params** : Google Init Params
   ///
-  /// **withLogs** : (optional) enable logs. *true* by default
+  /// **withLogs** : (optional) enable logs. *false* by default
   ///
-  static void init({required InitParamsGoogle params, bool withLogs = true}) =>
-      _init(params.apiKey, withLogs);
+  static void init({required InitParamsGoogle params, bool withLogs = false}) =>
+      _init(
+        params.apiKey,
+        withLogs,
+        androidPackageName: params.androidPackageName,
+        androidCertFingerprint: params.androidCertFingerprint,
+      );
 
   ///Get voices
   ///
@@ -57,9 +62,18 @@ class TtsGoogle {
     return repo.convertTts(ttsParams);
   }
 
-  static void _init(String apiKey, [bool withLogs = true]) {
+  static void _init(
+    String apiKey,
+    bool withLogs, {
+    String? androidPackageName,
+    String? androidCertFingerprint,
+  }) {
     if (!_initDone) {
-      ConfigGoogle.init(apiKey: apiKey);
+      ConfigGoogle.init(
+        apiKey: apiKey,
+        androidPackageName: androidPackageName,
+        androidCertFingerprint: androidCertFingerprint,
+      );
       _initRepository();
       _initLogs(withLogs);
       _initDone = true;
